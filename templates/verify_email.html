@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify Email - Step 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #2CCCE4;
+            --dark: #1A1B1F;
+            --light: #FFFFFF;
+            --accent: #FFD60A;
+            --success: #00F5A0;
+            --error: #FF6B6B;
+            --font-title: 'Bungee', sans-serif;
+            --font-body: 'Space Grotesk', sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: linear-gradient(125deg, var(--dark) 0%, #2A2D3A 100%);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--light);
+            padding: 2rem 1rem;
+        }
+
+        .page-title {
+            font-family: var(--font-title);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--secondary);
+            text-shadow: 0 2px 4px rgba(44, 204, 228, 0.2);
+        }
+
+        .verification-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            font-family: var(--font-title);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--secondary);
+            text-shadow: 0 2px 4px rgba(44, 204, 228, 0.2);
+        }
+
+        .info-text {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--light);
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(44, 204, 228, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--secondary);
+            border: none;
+            color: var(--dark);
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(44, 204, 228, 0.4);
+        }
+
+        .loader {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--secondary);
+            animation: spin 1s ease-in-out infinite;
+            margin: 20px auto;
+        }
+
+        .success-message {
+            display: none;
+            color: var(--success);
+            text-align: center;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 2px solid var(--success);
+            border-radius: 8px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .password-section {
+            display: none;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .error {
+            color: var(--error);
+            text-align: center;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 2px solid var(--error);
+            border-radius: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .verification-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2 class="page-title">Email Verification</h2>
+    <div class="verification-container">
+        {% if error %}
+            <p style="color: var(--error);">{{ error }}</p>
+        {% endif %}
+        
+        <div id="otpSection">
+            <p class="info-text">Please enter the OTP sent to your email</p>
+            <form method="POST" id="otpForm">
+                <div class="form-group">
+                    <label>Enter OTP:</label>
+                    <input type="text" name="otp" required>
+                </div>
+                <button type="submit" id="submitBtn">Verify</button>
+                <div class="loader" id="loader"></div>
+            </form>
+        </div>
+
+        <div id="successMessage" class="success-message">
+            Email verified successfully!
+        </div>
+
+        <div id="passwordSection" class="password-section">
+            <form method="POST" id="passwordForm">
+                <input type="hidden" name="step" value="2">
+                <div class="form-group">
+                    <label>Create Password:</label>
+                    <input type="password" name="password" required minlength="6">
+                </div>
+                <button type="submit">Continue to Profile Details</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        const otpForm = document.getElementById('otpForm');
+        const successMessage = document.getElementById('successMessage');
+        const passwordSection = document.getElementById('passwordSection');
+        const otpSection = document.getElementById('otpSection');
+
+        otpForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('loader').style.display = 'block';
+
+            const formData = new FormData(otpForm);
+            const response = await fetch('/verify-email', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                otpSection.style.display = 'none';
+                successMessage.style.display = 'block';
+                passwordSection.style.display = 'block';
+            } else {
+                document.getElementById('submitBtn').style.display = 'block';
+                document.getElementById('loader').style.display = 'none';
+                // Handle error
+            }
+        });
+    </script>
+</body>
+</html>

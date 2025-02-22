@@ -1,0 +1,26 @@
+{
+    "Vinayak4554": {
+        "city": "Mumbai",
+        "created_at": "2025-02-22 15:36:50.128651",
+        "credential": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidXNlcjoweDhFOGM1ODVFNzA3NTczODY2N0IyNUU1NjhmRDFCRjM4NTRDQWU1YUYiLCJjbGFpbXMiOnsibmFtZSI6IlZpbmF5YWs0NTU0IiwiZW1haWwiOiJzaGluZGV2aW5heWFrMjMzQGdtYWlsLmNvbSIsIndhbGxldCI6IjB4ZTdlNzEyOThhM2JkNDIxZjAxNGE3MDcxM2YzMTM2ZjQxMzdiM2Y2ZSJ9fQ.KkWalxS1x5Bn73cE__2SDGCkb1wcEzaj5guD5iuQHU0",
+        "email": "shindevinayak233@gmail.com",
+        "password": "Vinayak@123",
+        "pincode": "400082",
+        "state": "Maharashtra",
+        "unique_id": "user:0x8E8c585E7075738667B25E568fD1BF3854CAe5aF",
+        "username": "Vinayak4554",
+        "verified": true,
+        "wallet_address": "0xe7e71298a3bd421f014a70713f3136f4137b3f6e"
+    },
+    "vishal": {
+        "city": "Mumbai",
+        "created_at": "2025-02-22 14:54:08.486958",
+        "email": "Vishal214.mishra@gmail.com",
+        "password": "vishal",
+        "pincode": "400079",
+        "state": "Maharashtra",
+        "username": "vishal",
+        "verified": true,
+        "wallet_address": "0xe7e71298a3bd421f014a70713f3136f4137b3f6e"
+    }
+}

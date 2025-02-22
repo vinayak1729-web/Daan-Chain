@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up - Step 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --dark: #292F36;
+            --light: #F7F7F7;
+            --accent: #FFE66D;
+            --font-family-title: 'Bungee', sans-serif;
+            --font-family-body: 'Space Grotesk', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: linear-gradient(135deg, var(--dark) 0%, #1a1a1a 100%);
+            font-family: var(--font-family-body);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            color: var(--light);
+        }
+
+        .signup-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            font-family: var(--font-family-title);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--accent);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--light);
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border-radius: 4px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--secondary);
+            border: none;
+            color: var(--dark);
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        #signupForm {
+            width: 100%;
+        }
+
+        .loader {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 5px;
+            margin: 20px auto;
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 14pt;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .dot {
+            margin-left: 3px;
+            animation: blink 1.5s infinite;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .loading-bar-background {
+            --height: 30px;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            padding: 5px;
+            width: 200px;
+            height: var(--height);
+            background-color: #212121;
+            box-shadow: #0c0c0c -2px 2px 4px 0px inset;
+            border-radius: calc(var(--height) / 2);
+        }
+
+        .loading-bar {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            --height: 20px;
+            width: 0%;
+            height: var(--height);
+            overflow: hidden;
+            background: linear-gradient(0deg, rgba(222, 74, 15, 1) 0%, rgba(249, 199, 79, 1) 100%);
+            border-radius: calc(var(--height) / 2);
+            animation: loading 4s ease-out infinite;
+        }
+
+        .white-bars-container {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .white-bar {
+            background: linear-gradient(-45deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 70%);
+            width: 10px;
+            height: 45px;
+            opacity: 0.3;
+            rotate: 45deg;
+        }
+
+        @keyframes loading {
+            0% { width: 0; }
+            80% { width: 100%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 1.5rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <h2>Sign Up - Basic Information</h2>
+        <form method="POST" id="signupForm">
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" name="username" required>
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" name="email" required>
+            </div>
+            <button type="submit" id="submitBtn">Continue</button>
+            
+            <div class="loader" id="loader">
+                <div class="loading-text">Loading<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
+                <div class="loading-bar-background">
+                    <div class="loading-bar">
+                        <div class="white-bars-container">
+                            <div class="white-bar"></div>
+                            <div class="white-bar"></div>
+                            <div class="white-bar"></div>
+                            <div class="white-bar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('loader').style.display = 'flex';
+        });
+    </script>
+</body>
+</html>

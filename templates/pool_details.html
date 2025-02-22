@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pool Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        :root {
+            --primary: #3B82F6;
+            --secondary: #6366F1;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --border-radius: 12px;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    
+        body {
+            background: linear-gradient(135deg, #EEF2FF 0%, #F9FAFB 100%);
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+    
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+    
+        .breadcrumb {
+            background: transparent;
+            padding: 1rem 0;
+        }
+    
+        .breadcrumb-item a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+    
+        .pool-details {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+    
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+    
+        .badge {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 20px;
+        }
+    
+        .pool-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-md);
+        }
+    
+        .progress {
+            height: 1.5rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+            background: #E5E7EB;
+            overflow: hidden;
+        }
+    
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s ease;
+        }
+    
+        .creator-info {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #E5E7EB;
+        }
+    
+        .pool-map {
+            height: 400px;
+            border-radius: var(--border-radius);
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-md);
+        }
+    
+        .donate-form {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid #E5E7EB;
+            box-shadow: var(--shadow-sm);
+        }
+    
+        .form-control {
+            padding: 0.75rem 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+    
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+    
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+    
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+    
+        .transaction-history {
+            margin-top: 3rem;
+        }
+    
+        .list-group-item {
+            border: 1px solid #E5E7EB;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+    
+        .list-group-item:hover {
+            background: var(--light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+    
+        .alert {
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+    
+            h1 {
+                font-size: 1.75rem;
+            }
+    
+            .pool-image {
+                height: 300px;
+            }
+    
+            .pool-map {
+                height: 300px;
+            }
+        }
+    </style>
+    
+</head>
+
+<body>
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/view-pools">All Pools</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Pool Details</li>
+            </ol>
+        </nav>
+        
+     
+        <div class="pool-details">
+            <h1 id="poolName"></h1>
+            <span class="badge badge-info" id="poolCategory"></span>
+
+            
+            
+            <div class="progress">
+                <div id="progressBar" class="progress-bar" role="progressbar"></div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Target Amount: <span id="targetAmount"></span> ETH</h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>Current Amount: <span id="currentAmount"></span> ETH</h4>
+                </div>
+            </div>
+
+            <div class="creator-info">
+                <h5>Created by: <span id="creatorName"></span></h5>
+                <p>Created on: <span id="createdDate"></span></p>
+            </div>
+
+            <h4>Location: <span id="poolLocation"></span></h4>
+            <div id="poolMap" class="pool-map"></div>
+
+            <h4>Description</h4>
+            <p id="poolDescription"></p>
+
+            <div class="donate-form">
+                <h3>Make a Donation</h3>
+                <form id="donationForm">
+                    <div class="form-group">
+                        <label for="donationAmount">Amount (ETH)</label>
+                        <input type="number" class="form-control" id="donationAmount" min="0.000000000000000001"
+                            step="any" required placeholder="Enter amount in ETH">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Donation</button>
+                </form>
+                <div id="donateStatus" class="mt-3"></div>
+            </div>
+            <div class="transaction-history mt-4">
+                <h3>Transaction History</h3>
+                <div id="transactionList" class="list-group">
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+
+    <script>
+
+        let poolId;
+        let map;
+
+        async function initWeb3() {
+            if (typeof window.ethereum !== 'undefined') {
+                web3 = new Web3(window.ethereum);
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    currentAccount = accounts[0];
+                    document.getElementById('donateStatus').innerHTML =
+                        `<div class="alert alert-success">Connected with: ${currentAccount.substring(0, 8)}...</div>`;
+                } catch (error) {
+                    document.getElementById('donateStatus').innerHTML =
+                        '<div class="alert alert-danger">Please connect MetaMask to donate.</div>';
+                }
+            } else {
+                document.getElementById('donateStatus').innerHTML =
+                    '<div class="alert alert-warning">Please install MetaMask to donate.</div>';
+            }
+        }
+        async function getCurrentLocation() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject('Geolocation is not supported');
+                }
+                navigator.geolocation.getCurrentPosition(
+                    position => resolve({
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    }),
+                    error => reject(error)
+                );
+            });
+        }
+
+        async function loadPoolDetails() {
+            poolId = window.location.pathname.split('/').pop();
+            try {
+                const response = await fetch(`/api/pools/${poolId}`);
+                const pool = await response.json();
+
+                document.getElementById('poolName').textContent = pool.name;
+                document.getElementById('poolCategory').textContent = pool.category;
+                document.getElementById('poolLocation').textContent = pool.location;
+                document.getElementById('poolDescription').textContent = pool.description;
+                document.getElementById('targetAmount').textContent = pool.targetAmount;
+                document.getElementById('currentAmount').textContent = pool.currentAmount;
+                document.getElementById('creatorName').textContent = pool.creator.username;
+                document.getElementById('createdDate').textContent = new Date(pool.createdAt).toLocaleDateString();
+
+                // Set progress bar
+                const progress = (pool.currentAmount / pool.targetAmount) * 100;
+                const progressBar = document.getElementById('progressBar');
+                progressBar.style.width = `${progress}%`;
+                progressBar.textContent = `${progress.toFixed(1)}%`;
+
+                // Initialize map
+                map = L.map('poolMap').setView([pool.coordinates.lat, pool.coordinates.lng], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                L.marker([pool.coordinates.lat, pool.coordinates.lng]).addTo(map);
+
+                // Set pool image
+                if (pool.image_path) {
+                    document.getElementById('poolImage').src = pool.image_path;
+                }
+            } catch (error) {
+                console.error('Error loading pool details:', error);
+            }
+        }
+        // Add this function to get current location
+
+        // Modify the donation form submission handler
+        document.getElementById('donationForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const amount = document.getElementById('donationAmount').value;
+            const statusDiv = document.getElementById('donateStatus');
+
+            try {
+                statusDiv.innerHTML = '<div class="alert alert-info">Validating location...</div>';
+
+                // Get current location
+                const location = await getCurrentLocation();
+                const weiAmount = web3.utils.toWei(amount, 'ether');
+
+                // Get recipient address
+                const response = await fetch(`/api/pools/${poolId}`);
+                const pool = await response.json();
+                const recipientAddress = pool.creator.wallet_address;
+
+                // Direct wallet transfer
+                const tx = await web3.eth.sendTransaction({
+                    from: currentAccount,
+                    to: recipientAddress,
+                    value: weiAmount
+                });
+
+                // Save transaction with location data
+                const transactionData = {
+                    poolId: poolId,
+                    from: currentAccount,
+                    to: recipientAddress,
+                    amount: amount,
+                    transactionHash: tx.transactionHash,
+                    timestamp: new Date().toISOString(),
+                    location: location  // Add location data
+                };
+
+                // Send to backend
+                const saveResponse = await fetch('/api/transactions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(transactionData)
+                });
+
+                const result = await saveResponse.json();
+
+                if (result.success) {
+                    statusDiv.innerHTML = `
+                <div class="alert alert-success">
+                    Successfully donated ${amount} ETH!
+                    <br>
+                    Location verified ✓
+                    <br>
+                    Transaction: <a href="https://goerli.etherscan.io/tx/${tx.transactionHash}" target="_blank">
+                        ${tx.transactionHash.substring(0, 10)}...
+                    </a>
+                </div>`;
+                } else {
+                    statusDiv.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
+                }
+
+                await loadPoolDetails();
+                await loadTransactions();
+
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            }
+        });
+
+        // Update transaction display to show location verification
+        async function loadTransactions() {
+            try {
+                const response = await fetch(`/api/transactions/${poolId}`);
+                const transactions = await response.json();
+
+                const transactionList = document.getElementById('transactionList');
+                transactionList.innerHTML = transactions.map(tx => `
+            <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <strong>${tx.amount} ETH</strong>
+                    <small>${new Date(tx.timestamp).toLocaleString()}</small>
+                </div>
+                <div class="mt-2">
+                    <small>From: ${tx.from.substring(0, 10)}...</small><br>
+                    <small>To: ${tx.to.substring(0, 10)}...</small><br>
+                    <small>
+                        <a href="https://goerli.etherscan.io/tx/${tx.transactionHash}" target="_blank">
+                            View Transaction
+                        </a>
+                        ${tx.location_verified ? ' | Location Verified ✓' : ''}
+                    </small>
+                </div>
+            </div>
+        `).join('');
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+            }
+        }
+
+
+        // Add transaction loading to page initialization
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initWeb3();
+            await loadPoolDetails();
+            await loadTransactions();
+        });
+    </script>
+</body>
+
+</html>

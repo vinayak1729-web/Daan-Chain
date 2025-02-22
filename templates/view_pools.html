@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Fund Pools</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Dapp-like Navbar and Grid CSS */
+        :root {
+            --primary: #6246EA; /* More Dapp-like Primary Blue */
+            --secondary: #00ADB5;
+            --dark: #222831; /* Darker background for navbar etc. */
+            --light: #EEEEEE; /* Very Light Gray/ майже white */
+            --accent: #FFD369; /* Gold/Yellow Accent */
+            --text-light: var(--light); /* Light text color for contrast on dark bg */
+            --text-dark: var(--dark);
+            --border-radius: 8px;
+            --grid-gap: 25px; /* Increased grid gap for spacing */
+            --navbar-height: 70px; /* Fixed navbar height */
+            --font-family-body: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family-body);
+            background-color: var(--light);
+            color: var(--text-dark);
+            margin: 0; /* Reset body margin */
+            padding-top: var(--navbar-height); /* Spacing below fixed navbar */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column; /* For container centering */
+            align-items: center; /* Center container */
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 95%; /* Responsive width, use % not fixed pixel for max-width cases*/
+            margin: 20px auto; /* Auto left/right margin, centered already due to body */
+            padding: 20px;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            position: fixed; /* Fixed position at the top */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--navbar-height);
+            background-color: var(--dark);
+            color: var(--text-light);
+            display: flex;
+            justify-content: space-between; /* Logo on left, links on right */
+            align-items: center;
+            padding: 0 25px; /* Horizontal padding inside navbar */
+            z-index: 1000; /* Ensure navbar is on top of other content */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Subtle shadow */
+        }
+
+        .navbar .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--text-light);
+            text-decoration: none; /* Remove link underline if logo becomes link */
+        }
+
+        .navbar .nav-links {
+            display: flex; /* Horizontal navigation links */
+            align-items: center;
+        }
+
+        .navbar .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 10px 15px;
+            margin-left: 15px;
+            border-radius: var(--border-radius);
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth hover transition */
+            display: flex; /* Align icon and text nicely */
+            align-items: center;
+        }
+
+        .navbar .nav-links a i {
+            margin-right: 8px; /* Icon spacing */
+            font-size: 1.1em;
+        }
+
+        .navbar .nav-links a:hover,
+        .navbar .nav-links a.active {
+            background-color: var(--primary); /* Primary color on hover/active */
+            color: var(--text-light); /* Text remains light */
+        }
+        .nav-tabs {
+            display: flex; /* Use flex for horizontal tabs */
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--secondary); /* Secondary color tab border */
+            justify-content: flex-start; /* Align tabs to the start */
+            overflow-x: auto; /* Enable horizontal scroll if tabs overflow */
+        }
+
+        .nav-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent; /* Default transparent border */
+            margin-bottom: -2px;
+            color: var(--text-dark); /* Tab text color */
+            text-decoration: none;
+            transition: border-bottom-color 0.3s ease, color 0.3s ease;
+            white-space: nowrap; /* Prevent text wrapping in tabs */
+        }
+
+        .nav-tab.active {
+            border-bottom-color: var(--primary); /* Primary color for active tab border */
+            color: var(--primary); /* Primary color for active tab text */
+            font-weight: bold; /* Make active tab text bold */
+        }
+
+        .nav-tab:hover {
+            border-bottom-color: var(--secondary); /* Hover effect border color */
+            color: var(--secondary); /* Hover effect text color */
+        }
+
+        .pools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* Wider min-width cards */
+    gap: var(--grid-gap);
+    margin-top: 25px;
+}
+
+        .pool-card {
+            border: 1px solid var(--dark); /* Darker border for cards */
+            border-radius: var(--border-radius);
+            padding: 20px; /* More padding */
+            background: var(--light); /* Light card background */
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.1); /* Subtle shadow */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Hover transition */
+        }
+
+        .pool-card:hover {
+            transform: translateY(-5px); /* Slight lift on hover */
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.15); /* Increased shadow on hover */
+        }
+
+        .pool-card h2 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.6rem;
+            color: var(--primary); /* Primary color titles */
+        }
+
+        .category-tag {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px; /* Rounded category tags */
+            background: var(--secondary); /* Secondary color category tag background */
+            color: var(--text-light); /* Light text on tags */
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .pool-map {
+            height: 220px; /* Increased map height */
+            margin: 15px 0;
+            border-radius: var(--border-radius);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1); /* Shadow for maps */
+        }
+
+        .pool-card p {
+            margin-bottom: 10px;
+            line-height: 1.6; /* Better line height for text */
+            color: var(--text-dark);
+        }
+
+        .pool-card strong {
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .pool-card small {
+            color: #777; /* Muted date text */
+            font-size: 0.85rem;
+        }
+
+        .donate-section {
+            margin-top: 20px;
+            text-align: right; /* Align donate button to the right */
+        }
+
+        .donate-form {
+            display: none;
+            margin-top: 10px;
+            text-align: left; /* Reset text alignment for form inside donate-section */
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .form-group input[type="number"] {
+            width: calc(100% - 20px); /* Input takes full width minus padding and border */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius);
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        .btn { /* Bootstrap button style - slightly modified */
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--text-light);
+        }
+
+        .btn-success {
+            background-color: var(--secondary);
+            color: var(--text-dark);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        #donate-status {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="logo">DaanChain</a> <!-- Logo as a link to home -->
+        <div class="nav-links">
+            <a href="/create-pool"><i class="fas fa-plus"></i> Fund Management</a>
+            <a href="/view-pools" class="active"><i class="fas fa-list"></i> Dashboard</a> <!-- View Pools as Dashboard Now-->
+             <a href="/profile"><i class="fas fa-user"></i> Profile</a> <!-- Profile Link -->
+            <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a> <!-- Logout Link -->
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="nav-tabs">
+             <!-- View Pools Tab is Active Now -->
+            <a href="#" class="nav-tab active">Active Pools</a>
+        </div>
+
+        <h1>Explore Relief Initiatives</h1> <!-- More Engaging Title -->
+
+        <div class="pools-grid" id="poolsContainer">
+        </div>
+    </div>
+   
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+
+    <script>
+        const maps = {};
+        let web3;
+
+        async function initWeb3() {
+            if (typeof window.ethereum !== 'undefined') {
+                web3 = new Web3(window.ethereum);
+                try {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                } catch (error) {
+                    console.error("User denied account access");
+                }
+            } else {
+                console.log('Please install MetaMask!');
+            }
+        }
+
+
+        async function loadPools() {
+            try {
+                const response = await fetch('/api/pools');
+                const data = await response.json();
+
+                const container = document.getElementById('poolsContainer');
+                container.innerHTML = data.pools.map(pool => `
+                    <div class="pool-card">
+                <img src="${pool.imageUrl}" class="pool-image" alt="${pool.name}">
+                <h2>${pool.name}</h2>
+                <span class="category-tag">${pool.category}</span>
+                <p><strong>Location:</strong> ${pool.location}</p>
+                <div id="map-${pool.id}" class="pool-map"></div>
+                <p>${pool.description}</p>
+                <p><small>Created: ${new Date(pool.createdAt).toLocaleDateString()}</small></p>
+                <div class="donate-section">
+                    <a href="/pools/${pool.id}" class="btn btn-primary btn-sm">View Details & Donate</a>
+                </div>
+            </div>
+                `).join('');
+
+                // Initialize maps for each pool
+                data.pools.forEach(pool => {
+                    const map = L.map(`map-${pool.id}`).setView([pool.coordinates.lat, pool.coordinates.lng], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                    L.marker([pool.coordinates.lat, pool.coordinates.lng]).addTo(map);
+                    maps[pool.id] = map;
+                });
+            } catch (error) {
+                console.error('Error loading pools:', error);
+            }
+        }
+
+        function toggleDonateForm(poolId) {
+            const form = document.getElementById(`donateForm-${poolId}`);
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+
+        async function donateToPool(event, poolId) {
+            event.preventDefault();
+            const amount = document.getElementById(`donationAmount-${poolId}`).value;
+            const statusDiv = document.getElementById(`donate-status-${poolId}`);
+            statusDiv.innerHTML = 'Donation in progress...';
+
+            if (!web3) {
+                statusDiv.innerHTML = '<p class="text-danger">Web3 not initialized. Please connect MetaMask.</p>';
+                return;
+            }
+
+            try {
+                const accounts = await web3.eth.getAccounts();
+                const donorAddress = accounts[0];
+
+                const response = await fetch(`/api/pools/${poolId}/donate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        donor_address: donorAddress,
+                        amount: amount
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    statusDiv.innerHTML = `<p class="text-success">Donation successful! Tx: ${result.transaction_hash ? `<a href="#" onclick="checkTransactionStatus('${result.transaction_hash}')">View Tx Status</a>` : 'N/A'}</p>`;
+                    loadPools(); // Refresh pools list to update amounts (if displayed)
+
+                } else {
+                    const errorData = await response.json();
+                    statusDiv.innerHTML = `<p class="text-danger">Donation failed: ${errorData.error || 'Unknown error'}</p>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<p class="text-danger">Error during donation: ${error.message}</p>`;
+            }
+        }
+
+        function checkTransactionStatus(txHash) {
+            alert(`Transaction Hash: ${txHash}. You can check its status on a block explorer.`);
+        }
+
+        // Load pools and init web3 when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initWeb3();
+            loadPools();
+        });
+    </script>
+</body>
+
+</html>

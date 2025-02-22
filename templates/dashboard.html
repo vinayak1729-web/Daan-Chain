@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Emergency Relief Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Space+Grotesk:wght@400;700&display=swap"
+        rel="stylesheet">
+        <style>
+            :root {
+                --primary: #FF6B6B;
+                --secondary: #4ECDC4;
+                --dark: #292F36;
+                --light: #F7F7F7;
+                --accent: #FFE66D;
+                --success: #2ECC71;
+                --error: #E74C3C;
+                --border-thick: 3px solid var(--dark);
+                --font-family-title: 'Bungee', sans-serif;
+                --font-family-body: 'Space Grotesk', sans-serif;
+                --grid-gap: 1.5rem;
+                --container-width: 1400px;
+            }
+        
+            * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+            body {
+                background: linear-gradient(135deg, var(--dark) 0%, #1a1a1a 100%);
+                font-family: var(--font-family-body);
+                min-height: 100vh;
+                color: var(--light);
+                padding: 2rem;
+            }
+        
+            .page-title {
+                font-family: var(--font-family-title);
+                font-size: 2.5rem;
+                color: var(--accent);
+                text-align: center;
+                margin-bottom: 2rem;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+        
+            .dashboard-container {
+                max-width: var(--container-width);
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: 1fr 300px;
+                gap: var(--grid-gap);
+            }
+        
+            .dashboard-section {
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 2rem;
+                border-radius: 12px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            }
+        
+            .account-info {
+                grid-column: 1 / -1;
+                text-align: center;
+                padding: 1rem;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                margin-bottom: 1.5rem;
+            }
+        
+            .network-status {
+                height: fit-content;
+            }
+        
+            h2, h3 {
+                color: var(--secondary);
+                margin-bottom: 1.5rem;
+                padding-bottom: 0.8rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        
+            .button-link {
+                display: inline-block;
+                padding: 1rem 2rem;
+                background: var(--secondary);
+                color: var(--dark);
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: bold;
+                margin-bottom: 1.5rem;
+                transition: all 0.3s ease;
+            }
+        
+            .button-link:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+            }
+        
+            input, select {
+                width: 100%;
+                padding: 1rem;
+                margin-bottom: 1rem;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                color: var(--light);
+                font-size: 1rem;
+            }
+        
+            button {
+                width: 100%;
+                padding: 1rem;
+                background: var(--secondary);
+                color: var(--dark);
+                border: none;
+                border-radius: 8px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+        
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+            }
+        
+            .status-badge {
+                display: inline-block;
+                padding: 0.5rem 1rem;
+                border-radius: 20px;
+                font-size: 0.9rem;
+                font-weight: bold;
+            }
+        
+            .status-success { background: var(--success); color: white; }
+            .status-error { background: var(--error); color: white; }
+            .status-pending { background: var(--accent); color: var(--dark); }
+        
+            .alert {
+                padding: 1rem;
+                border-radius: 8px;
+                margin-bottom: 1rem;
+                animation: slideDown 0.3s ease-out;
+            }
+        
+            .alert-success { background: var(--success); color: white; }
+            .alert-danger { background: var(--error); color: white; }
+        
+            @keyframes slideDown {
+                from { transform: translateY(-20px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+        
+            @media (max-width: 1024px) {
+                .dashboard-container {
+                    grid-template-columns: 1fr;
+                }
+                
+                .network-status {
+                    order: -1;
+                }
+            }
+        
+            @media (max-width: 768px) {
+                body {
+                    padding: 1rem;
+                }
+        
+                .page-title {
+                    font-size: 2rem;
+                }
+        
+                .dashboard-section {
+                    padding: 1.5rem;
+                }
+            }
+        
+            @media (max-width: 480px) {
+                .page-title {
+                    font-size: 1.5rem;
+                }
+        
+                .button-link {
+                    width: 100%;
+                    text-align: center;
+                }
+            }
+        </style>
+        
+</head>
+
+<body><h1 style="grid-area: title;">Emergency Relief Dashboard</h1> <!-- Title placed in grid -->
+    <div class="dashboard-container">
+        
+
+        <div class="account-info" id="accountDisplay">
+            <!-- Account info will be injected here by JS -->
+        </div>
+
+
+        <div class="network-status dashboard-section">
+            <h3>Network Status</h3>
+            <div id="networkInfo"></div>
+            <div id="accountBalance"></div>
+        </div>
+
+        <div class="dashboard dashboard-section">
+            <a class="button">Manage Funds Pools</a>
+
+            <div class="beneficiary-section">
+                <h2>Register as Beneficiary</h2>
+                <form id="beneficiaryForm">
+                    <input type="text" id="location" placeholder="Enter location">
+                    <button type="submit">Register</button>
+                </form>
+            </div>
+
+            <div class="donor-section">
+                <h2>Make Donation</h2>
+                <form id="donationForm">
+                    <input type="number" id="amount" step="0.000000000000000001" min="0.000000000000000001"
+                        placeholder="Amount in ETH">
+                    <button type="submit">Donate</button>
+                </form>
+            </div>
+            <div class="direct-transfer-section">
+                <h2>Direct Transfer</h2>
+                <form id="transferForm">
+                    <input type="text" id="recipient-address" placeholder="Recipient's Wallet Address">
+                    <input type="number" id="transfer-amount" step="0.000000000000000001" placeholder="Amount in ETH">
+                    <button type="submit">Transfer</button>
+                </form>
+            </div>
+
+
+            <div id="beneficiaries-list">
+                <!-- Beneficiary list (if needed) -->
+            </div>
+        </div>
+
+    <script>
+
+        let web3;
+        let contract;
+        let currentAccount; // Store current account globally
+
+        async function transferEther() {
+            const recipientAddress = document.getElementById('recipient-address').value;
+            const amount = document.getElementById('transfer-amount').value;
+
+            try {
+                const weiAmount = web3.utils.toWei(amount, 'ether');
+
+                // Direct wallet transfer
+                const tx = await web3.eth.sendTransaction({
+                    from: currentAccount, // Use globally stored account
+                    to: recipientAddress,
+                    value: weiAmount
+                });
+
+                showSuccess(`Successfully transferred ${amount} ETH to ${recipientAddress}`);
+                checkTransactionStatus(tx.transactionHash);
+            } catch (error) {
+                showError("Transfer failed: " + error.message);
+            }
+        }
+        document.getElementById('transferForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await transferEther();
+        });
+        async function updateNetworkStatus() {
+            const networkId = await web3.eth.net.getId();
+            const networkType = await web3.eth.net.getNetworkType();
+            const networkDiv = document.getElementById('networkInfo');
+            networkDiv.innerHTML = `
+        <p>Network: ${networkType}</p>
+        <p>Network ID: ${networkId}</p>
+        <p>Connection Status: ${web3.eth.net.isListening() ? '<span class="status-badge status-success">🟢 Connected</span>' : '<span class="status-badge status-error">🔴 Disconnected</span>'}</p>
+    `;
+        }
+
+        async function updateAccountBalance() { // account parameter removed, uses global account
+            const balance = await web3.eth.getBalance(currentAccount); // use global account
+            const ethBalance = web3.utils.fromWei(balance, 'ether');
+            const balanceDiv = document.getElementById('accountBalance');
+            balanceDiv.innerHTML = `Balance: <span class="status-badge status-success">${parseFloat(ethBalance).toFixed(4)} ETH</span>`;
+        }
+
+        async function updateGasPrice() {
+            const gasPrice = await web3.eth.getGasPrice();
+            const gasPriceGwei = web3.utils.fromWei(gasPrice, 'gwei');
+            const gasPriceDiv = document.getElementById('gasPrice');
+
+            const prices = {
+                slow: gasPriceGwei * 0.8,
+                standard: gasPriceGwei,
+                fast: gasPriceGwei * 1.2
+            };
+
+            gasPriceDiv.innerHTML = `
+        <p>Current Gas Prices (Gwei):</p>
+        <p>🐢 Slow: <span class="status-badge status-pending">${prices.slow.toFixed(2)} Gwei</span></p>
+        <p>⚡ Standard: <span class="status-badge status-success">${prices.standard.toFixed(2)} Gwei</span></p>
+        <p>🚀 Fast: <span class="status-badge status-error">${prices.fast.toFixed(2)} Gwei</span></p>
+    `;
+        }
+
+        async function loadTransactionHistory() { // account parameter removed, uses global account
+            const txHistoryDiv = document.getElementById('txHistory');
+            const blockNumber = await web3.eth.getBlockNumber();
+            const transactions = [];
+
+            // Get last 10 blocks
+            for (let i = 0; i < 10; i++) {
+                const block = await web3.eth.getBlock(blockNumber - i, true);
+                const relevantTxs = block.transactions.filter(tx =>
+                    tx.from === currentAccount || tx.to === currentAccount // Use global account
+                );
+                transactions.push(...relevantTxs);
+            }
+
+            txHistoryDiv.innerHTML = transactions.map(tx => `
+        <div class="tx-item">
+            <p>Hash: <a href="https://goerli.etherscan.io/tx/${tx.hash}" target="_blank">${tx.hash.substring(0, 10)}...</a></p>
+            <p>From: ${tx.from.substring(0, 8)}...</p>
+            <p>To: ${tx.to.substring(0, 8)}...</p>
+            <p>Value: ${web3.utils.fromWei(tx.value, 'ether')} ETH</p>
+        </div>
+    `).join('');
+        }
+
+
+        // Initialize Web3 and Contract
+        async function initWeb3() {
+            try {
+                if (typeof window.ethereum !== 'undefined') {
+                    web3 = new Web3(window.ethereum);
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+                    if (accounts.length > 0) {
+                        currentAccount = accounts[0]; // Store current account globally
+                    } else {
+                        showError("No accounts found in MetaMask. Please create or import an account.");
+                        return false;
+                    }
+
+
+                    // Complete contract ABI - **ENSURE THIS ABI IS UP TO DATE WITH YOUR CONTRACT**
+                    const contractABI = [  // ... (Your ABI JSON here) ...
+                        {
+                            "anonymous": false,
+                            "inputs": [
+                                {
+                                    "indexed": false,
+                                    "internalType": "address",
+                                    "name": "beneficiary",
+                                    "type": "address"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "uint256",
+                                    "name": "amount",
+                                    "type": "uint256"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "uint256",
+                                    "name": "timestamp",
+                                    "type": "uint256"
+                                }
+                            ],
+                            "name": "AidDisbursed",
+                            "type": "event"
+                        },
+                        {
+                            "anonymous": false,
+                            "inputs": [
+                                {
+                                    "indexed": false,
+                                    "internalType": "address",
+                                    "name": "beneficiary",
+                                    "type": "address"
+                                },
+                                {
+                                    "indexed": false,
+                                    "internalType": "string",
+                                    "name": "location",
+                                    "type": "string"
+                                }
+                            ],
+                            "name": "BeneficiaryRegistered",
+                            "type": "event"
+                        },
+                        {
+                            "inputs": [
+                                {
+                                    "internalType": "string",
+                                    "name": "_location",
+                                    "type": "string"
+                                }
+                            ],
+                            "name": "registerBeneficiary",
+                            "outputs": [],
+                            "stateMutability": "nonpayable",
+                            "type": "function"
+                        },
+                        {
+                            "inputs": [],
+                            "name": "donate",
+                            "outputs": [],
+                            "stateMutability": "payable",
+                            "type": "function"
+                        }
+                    ];
+
+                    const contractAddress = "0x093BB17712778CC778BDFe9991Fcf07D27935014";
+                    contract = new web3.eth.Contract(contractABI, contractAddress);
+                    // Update all status displays
+                    await updateNetworkStatus();
+                    await updateAccountBalance();
+                    await updateGasPrice();
+                    await loadTransactionHistory();
+                    updateUIAccountDisplay(); // Use separate function to update account display
+
+                    // Set up periodic updates
+                    setInterval(updateGasPrice, 10000);
+                    setInterval(() => updateAccountBalance(), 5000);
+                    setInterval(() => loadTransactionHistory(), 60000); // Update tx history less frequently (every minute)
+
+
+                    return true;
+                } else {
+                    showError("Please install MetaMask!");
+                    return false;
+                }
+            } catch (error) {
+                showError("Error initializing Web3: " + error.message);
+                return false;
+            }
+        }
+
+        function updateUIAccountDisplay() {
+            const accountDisplayDiv = document.getElementById('accountDisplay');
+            accountDisplayDiv.textContent = `Connected Account: ${currentAccount.substring(0, 10)}...${currentAccount.substring(currentAccount.length - 4)}`;
+        }
+
+
+        // Register Beneficiary
+        async function registerBeneficiary(event) {
+            event.preventDefault();
+            const location = document.getElementById('location').value;
+
+            try {
+                const response = await fetch('/register_beneficiary', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        wallet_address: currentAccount, // Use globally stored account
+                        location: location
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showSuccess('Registration successful!');
+                    checkTransactionStatus(result.transaction_hash);
+                } else {
+                    showError(result.error);
+                }
+            } catch (error) {
+                showError("Error registering: " + error.message);
+            }
+        } // Enhanced donation input with wide range support
+        async function validateAndFormatAmount(amount) {
+            const weiAmount = web3.utils.toWei(amount, 'ether');
+            const formattedAmount = web3.utils.fromWei(weiAmount, 'ether');
+            return weiAmount;
+        }
+
+        async function makeDonation(event) {
+            event.preventDefault();
+            const amount = document.getElementById('amount').value;
+
+            try {
+                const weiAmount = await validateAndFormatAmount(amount);
+
+
+                const tx = await contract.methods.donate().send({
+                    from: currentAccount, // Use globally stored account
+                    value: weiAmount
+                });
+
+                showSuccess(`Donation of ${amount} ETH successful!`);
+                checkTransactionStatus(tx.transactionHash);
+            } catch (error) {
+                showError("Error donating: " + error.message);
+            }
+        }
+
+
+
+        // Check Transaction Status
+        function checkTransactionStatus(txHash) {
+            const statusDiv = document.getElementById('txStatus');
+            statusDiv.innerHTML = '<span class="status-badge status-pending">Checking transaction status...</span>';
+
+            const checkStatus = async () => {
+                try {
+                    const receipt = await web3.eth.getTransactionReceipt(txHash);
+                    if (receipt) {
+                        const tx = await web3.eth.getTransaction(txHash);
+                        statusDiv.innerHTML = `
+                    <div class="transaction-details">
+                        <p>Status: ${receipt.status ? '<span class="status-badge status-success">Success</span>' : '<span class="status-badge status-error">Failed</span>'}</p>
+                        <p>Block: ${receipt.blockNumber}</p>
+                        <p>Gas Used: ${receipt.gasUsed}</p>
+                        <p>From: ${tx.from.substring(0, 8)}...</p>
+                        <p>To: ${tx.to.substring(0, 8)}...</p>
+                    </div>
+                `;
+                    } else {
+                        statusDiv.innerHTML = '<span class="status-badge status-pending">Transaction pending...</span>';
+                        setTimeout(checkStatus, 2000);
+                    }
+                } catch (error) {
+                    statusDiv.innerHTML = '<span class="status-badge status-error">Error checking status: ' + error.message + '</span>';
+                }
+            };
+
+            checkStatus();
+        }
+
+        // UI Helper Functions
+        function showSuccess(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success';
+            alertDiv.textContent = message;
+            document.querySelector('.dashboard-container').prepend(alertDiv); // Prepend to container
+            setTimeout(() => alertDiv.remove(), 5000); // Longer success message duration
+        }
+
+        function showError(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger';
+            alertDiv.textContent = message;
+            document.querySelector('.dashboard-container').prepend(alertDiv); // Prepend to container
+            setTimeout(() => alertDiv.remove(), 5000); // Longer error message duration
+        }
+
+
+        // Event Listeners
+        window.addEventListener('load', initWeb3);
+        document.getElementById('beneficiaryForm').addEventListener('submit', registerBeneficiary);
+        document.getElementById('donationForm').addEventListener('submit', makeDonation);
+
+        // MetaMask Account Change Listener - Update UI on account change
+        if (window.ethereum) {
+            window.ethereum.on('accountsChanged', function (accounts) {
+                if (accounts.length > 0) {
+                    currentAccount = accounts[0]; // Update global account
+                    updateUIAccountDisplay();
+                    updateAccountBalance();
+                    loadTransactionHistory();
+                } else {
+                    showError("No accounts found in MetaMask. Please create or import an account.");
+                    accountDisplayDiv.textContent = "No account connected"; // Clear display
+                }
+            });
+        }
+
+    </script>
+</body>
+
+</html>
