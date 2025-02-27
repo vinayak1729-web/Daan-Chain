@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="images/daan-chain.png" alt="DaanChain Logo" width="200"/>
-  
+  <img src="images/daan-chain.png" alt="DaanChain Logo" width="70%" style="max-width: 500px height: auto"/>
+
   # DaanChain
   
   *Blockchain-Powered Emergency Relief System for Rural India*
@@ -20,9 +20,38 @@ DaanChain revolutionizes emergency relief distribution in rural India through bl
 
 ## ✨ Key Features
 
-<div align="center">
-  <img src="screenshots/features-collage.gif" alt="Feature Overview" width="600"/>
-</div>
+### 🔐 Smart Contract-Powered Fund Management
+- Automated fund disbursement with real-time transaction tracking
+- Multi-signature wallet support for enhanced security
+- Automated OTP verification system for user authentication
+- JWT-based secure session management
+
+### 📍 Advanced Location Services
+- Geofencing with 5km radius validation
+- Real-time distance calculation for aid distribution
+- Location-verified payment confirmation system
+- Geographic need assessment and mapping
+
+### 💎 Enhanced Security Features
+- Decentralized Identity (DID) verification
+- JWT-based authentication system
+- Private key management for secure transactions
+- Credential verification system
+- Email verification with OTP
+
+### 📊 Fund Management
+- Real-time pool creation and management
+- Transaction history tracking
+- Dynamic fund allocation
+- Automated disbursement triggers
+- Pool status monitoring
+
+### 👥 User Management
+- Multi-role support (Donors, Beneficiaries, Administrators)
+- Profile management with wallet integration
+- Account age tracking
+- Transaction history
+- Credential management
 
 ### 🔐 Smart Contract-Powered Fund Management
 - Automated fund disbursement
@@ -138,16 +167,21 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+
 ## 🙏 Acknowledgments
 
+- **Created By:**
+  - Vinayak Shinde
+  - Vishal Mishra
 - Rural Development Ministry
 - Blockchain Development Community
 - Our Amazing Contributors
 
 <div align="center">
 
-### Made with ❤️ for Rural India
+### An Open Source Crowdfunding Platform Made with ❤️ for Rural India
 
-[Website](https://daanchain.org) • [Documentation](https://docs.daanchain.org) • [Report Bug](https://github.com/yourusername/daanchain/issues)
+[Report Issues](https://github.com/vinayak1729-web/daanchain/issues) • [Request Features](https://github.com/vinayak1729-web/daanchain/issues)
 
 </div>
+
