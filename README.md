@@ -181,7 +181,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### An Open Source Crowdfunding Platform Made with ❤️ for Rural India
 
-[Report Issues](https://github.com/vinayak1729-web/daanchain/issues) • [Request Features](https://github.com/vinayak1729-web/daanchain/issues)
+[Report Issues](https://github.com/vinayak1729-web/Daan-Chain/issues) • [Request Features](https://github.com/vinayak1729-web/Daan-Chain/issues)
 
 </div>
 
