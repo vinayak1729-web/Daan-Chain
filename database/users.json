@@ -1,4 +1,17 @@
 {
+    "Nihar": {
+        "city": "Mumbai",
+        "created_at": "2025-02-23 15:25:19.296334",
+        "credential": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidXNlcjoweDczOTc5ZEQ2NzkwOGVDYTU4ODM4NDAzQjE3OTI4NWE4ODZlRDY0NDMiLCJjbGFpbXMiOnsibmFtZSI6Ik5paGFyIiwiZW1haWwiOiJucnN2cnM4NzhAZ21haWwuY29tIiwid2FsbGV0IjoiMHhlN2U3MTI5OGEzYmQ0MjFmMDE0YTcwNzEzZjMxMzZmNDEzN2IzZjZlIn19.TZwQ2AQr7fcougcLy4XsOK4NHyw9iw6xmlw4KRuB0zY",
+        "email": "nrsvrs878@gmail.com",
+        "password": "Nihar@123",
+        "pincode": "400082",
+        "state": "Maharashtra",
+        "unique_id": "user:0x73979dD67908eCa58838403B179285a886eD6443",
+        "username": "Nihar",
+        "verified": true,
+        "wallet_address": "0xe7e71298a3bd421f014a70713f3136f4137b3f6e"
+    },
     "Vinayak4554": {
         "city": "Mumbai",
         "created_at": "2025-02-22 15:36:50.128651",
@@ -11,6 +24,32 @@
         "username": "Vinayak4554",
         "verified": true,
         "wallet_address": "0xe7e71298a3bd421f014a70713f3136f4137b3f6e"
+    },
+    "Vinayak@123": {
+        "city": "Mumbai",
+        "created_at": "2025-02-22 18:13:06.124163",
+        "credential": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidXNlcjoweDM4OWI5ZkM0MTMzMzA0M0ZkMzM0MjU3Nzc5NzMzYkY0MTVDMDlCNTEiLCJjbGFpbXMiOnsibmFtZSI6IlZpbmF5YWtAMTIzIiwiZW1haWwiOiJzaGluZGV2aW5heWFrMjMzQGdtYWlsLmNvbSIsIndhbGxldCI6IjB4ZTdlNzEyOThhM2JkNDIxZjAxNGE3MDcxM2YzMTM2ZjQxMzdiM2Y2ZSJ9fQ.Iovud2JXUJeeK9lETyeC7IyY3z4rGLR5_49gBxk3jPM",
+        "email": "shindevinayak233@gmail.com",
+        "password": "Vinayak@123",
+        "pincode": "400082",
+        "state": "Maharashtra",
+        "unique_id": "user:0x389b9fC41333043Fd334257779733bF415C09B51",
+        "username": "Vinayak@123",
+        "verified": true,
+        "wallet_address": "0xe7e71298a3bd421f014a70713f3136f4137b3f6e"
+    },
+    "Vinish": {
+        "city": "Mumbai",
+        "created_at": "2025-02-26 23:40:18.712834",
+        "credential": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidXNlcjoweDU2MzEwNTY1OWQ1RTVFMDUwMUVlQjg4NTExOTc1NWVmOTI5NDgwYzUiLCJjbGFpbXMiOnsibmFtZSI6IlZpbmlzaCIsImVtYWlsIjoic2hpbmRldmluYXlhazIzM0BnbWFpbC5jb20iLCJ3YWxsZXQiOiIweEU3RTcxMjk4YTNiZDQyMWYwMTRBNzA3MTNmMzEzNkY0MTM3QjNmNkUifX0.FVudMWvM5kk33NoDVj7ppV16UfLlSJnM4og68CWR7h0",
+        "email": "shindevinayak233@gmail.com",
+        "password": "123",
+        "pincode": "400082",
+        "state": "Maharashtra",
+        "unique_id": "user:0x563105659d5E5E0501EeB885119755ef929480c5",
+        "username": "Vinish",
+        "verified": true,
+        "wallet_address": "0xE7E71298a3bd421f014A70713f3136F4137B3f6E"
     },
     "vishal": {
         "city": "Mumbai",
