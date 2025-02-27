@@ -173,9 +173,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Created By:**
   - Vinayak Shinde
   - Vishal Mishra
-- Rural Development Ministry
-- Blockchain Development Community
-- Our Amazing Contributors
+
 
 <div align="center">
 
